@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="FairSplit - Split group expenses, calculate fair shares and settle who owes whom."
+    >
+
+    <title>FairSplit — Group Expense Splitter</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         APP
+         ===================================================== -->
+
+    <div id="app">
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <header class="app-header">
+
+            <div class="header-inner">
+
+                <div class="brand">
+
+                    <div class="brand-icon">
+                        ₹
+                    </div>
+
+                    <div class="brand-text">
+
+                        <h1>
+                            FairSplit
+                        </h1>
+
+                        <span>
+                            Group Expense Splitter
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <button
+                        id="exportCsvBtn"
+                        class="secondary-btn"
+                        type="button"
+                    >
+                        ↓ Export
+                    </button>
+
+                    <button
+                        id="editGroupBtn"
+                        class="icon-btn"
+                        type="button"
+                        title="Edit group"
+                    >
+                        ⚙
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             GROUP SUMMARY
+             ================================================= -->
+
+        <section class="group-header">
+
+            <div class="container">
+
+                <div class="group-info">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            GROUP
+                        </p>
+
+                        <h2 id="groupNameDisplay">
+                            My Trip
+                        </h2>
+
+                        <p
+                            id="groupDescriptionDisplay"
+                            class="group-description"
+                        >
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-cards">
+
+
+                    <div class="summary-card">
+
+                        <span class="summary-label">
+                            Total Expense
+                        </span>
+
+                        <strong id="summaryTotal">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <span class="summary-label">
+                            Members
+                        </span>
+
+                        <strong id="summaryMembers">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <span class="summary-label">
+                            Avg. Share
+                        </span>
+
+                        <strong id="averageShare">
+                            ₹0.00
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
+
+        <nav class="main-nav">
+
+            <div class="container nav-inner">
+
+                <button
+                    class="nav-btn active"
+                    data-section="dashboard"
+                    type="button"
+                >
+                    <span>📊</span>
+                    Dashboard
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="members"
+                    type="button"
+                >
+                    <span>👥</span>
+                    Members
+
+                    <span
+                        id="memberCount"
+                        class="nav-count"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="expenses"
+                    type="button"
+                >
+                    <span>🧾</span>
+                    Expenses
+
+                    <span
+                        id="expenseCount"
+                        class="nav-count"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="settlement"
+                    type="button"
+                >
+                    <span>💸</span>
+                    Settlement
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="reports"
+                    type="button"
+                >
+                    <span>📈</span>
+                    Reports
+                </button>
+
+            </div>
+
+        </nav>
+
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <main class="container main-content">
+
+
+
+            <!-- =================================================
+                 DASHBOARD
+                 ================================================= -->
+
+            <section
+                id="dashboardSection"
+                class="page-section active"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            OVERVIEW
+                        </p>
+
+                        <h2>
+                            Group Dashboard
+                        </h2>
+
+                        <p>
+                            See who paid, who owes and
+                            who should receive money.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="addExpenseBtn"
+                        class="primary-btn"
+                        type="button"
+                    >
+                        + Add Expense
+                    </button>
+
+                </div>
+
+
+                <!-- Balance -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <h3>
+                                Current Balance
+                            </h3>
+
+                            <p>
+                                Actual payment compared
+                                with each person's fair share.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="balanceContainer">
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                👥
+                            </div>
+
+                            <h3>
+                                No members yet
+                            </h3>
+
+                            <p>
+                                Add your friends to start
+                                splitting expenses.
+                            </p>
+
+                            <button
+                                id="addFirstMemberBtn"
+                                class="primary-btn"
+                                type="button"
+                            >
+                                + Add Member
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Recent expenses -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <h3>
+                                Recent Expenses
+                            </h3>
+
+                            <p>
+                                Latest group expenses.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="text-btn"
+                            type="button"
+                            onclick="switchSection('expenses')"
+                        >
+                            View All →
+                        </button>
+
+                    </div>
+
+
+                    <div id="dashboardRecentExpenses">
+
+                        <div class="empty-state small">
+
+                            <p>
+                                No expenses recorded yet.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MEMBERS
+                 ================================================= -->
+
+            <section
+                id="membersSection"
+                class="page-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            PEOPLE
+                        </p>
+
+                        <h2>
+                            Group Members
+                        </h2>
+
+                        <p>
+                            Add everyone who is sharing
+                            the group expenses.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="addMemberBtn"
+                        class="primary-btn"
+                        type="button"
+                    >
+                        + Add Member
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="memberList"
+                    class="member-grid"
+                >
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            👥
+                        </div>
+
+                        <h3>
+                            No members
+                        </h3>
+
+                        <p>
+                            Add friends who are
+                            participating in this group.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EXPENSES
+                 ================================================= -->
+
+            <section
+                id="expensesSection"
+                class="page-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            TRANSACTIONS
+                        </p>
+
+                        <h2>
+                            Expenses
+                        </h2>
+
+                        <p>
+                            Record every cost from the
+                            trip, tour or outing.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="primary-btn"
+                        type="button"
+                        onclick="openExpenseModal()"
+                    >
+                        + Add Expense
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="expenseList"
+                    class="expense-list"
+                >
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            🧾
+                        </div>
+
+                        <h3>
+                            No expenses yet
+                        </h3>
+
+                        <p>
+                            Add your first group expense.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SETTLEMENT
+                 ================================================= -->
+
+            <section
+                id="settlementSection"
+                class="page-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            SETTLEMENT
+                        </p>
+
+                        <h2>
+                            Who Pays Whom
+                        </h2>
+
+                        <p>
+                            The simplest way to settle
+                            everyone's balance.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="settlementSummary"
+                    class="settlement-summary"
+                >
+                </div>
+
+
+                <div
+                    id="settlementList"
+                    class="settlement-list"
+                >
+                </div>
+
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+                        💡
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            How is this calculated?
+                        </strong>
+
+                        <p>
+                            Each person's final balance
+                            is calculated as:
+                        </p>
+
+                        <div class="formula">
+                            Actual Paid − Fair Share
+                            = Final Balance
+                        </div>
+
+                        <p>
+                            A positive balance means
+                            they should receive money.
+                            A negative balance means
+                            they need to pay.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 REPORTS
+                 ================================================= -->
+
+            <section
+                id="reportsSection"
+                class="page-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            ANALYTICS
+                        </p>
+
+                        <h2>
+                            Expense Reports
+                        </h2>
+
+                        <p>
+                            Understand where the group's
+                            money was spent.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="printReportBtn"
+                        class="secondary-btn"
+                        type="button"
+                    >
+                        🖨 Print
+                    </button>
+
+                </div>
+
+
+                <!-- Category report -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <h3>
+                                Spending by Category
+                            </h3>
+
+                            <p>
+                                See which categories
+                                consumed the most.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="categorySummary"
+                        class="category-summary"
+                    >
+
+                        <div class="empty-state small">
+
+                            <p>
+                                No expenses recorded.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Member report -->
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <h3>
+                                Member Summary
+                            </h3>
+
+                            <p>
+                                Payment and fair-share
+                                comparison.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="memberReport"
+                        class="member-report"
+                    >
+
+                        <div class="empty-state small">
+
+                            <p>
+                                No data available.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+
+        <!-- =================================================
+             MEMBER MODAL
+             ================================================= -->
+
+        <div
+            id="memberModal"
+            class="modal hidden"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box">
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            GROUP
+                        </p>
+
+                        <h3>
+                            Add Member
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        class="modal-close"
+                        type="button"
+                        data-close="memberModal"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <form id="memberForm">
+
+                    <div class="form-group">
+
+                        <label for="memberName">
+                            Member Name
+                        </label>
+
+                        <input
+                            id="memberName"
+                            type="text"
+                            placeholder="e.g. Ayan"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="modal-actions">
+
+                        <button
+                            class="secondary-btn"
+                            type="button"
+                            data-close="memberModal"
+                        >
+                            Cancel
+                        </button>
+
+
+                        <button
+                            class="primary-btn"
+                            type="submit"
+                        >
+                            Add Member
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             EXPENSE MODAL
+             ================================================= -->
+
+        <div
+            id="expenseModal"
+            class="modal hidden"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box large">
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            TRANSACTION
+                        </p>
+
+                        <h3>
+                            Add Expense
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        class="modal-close"
+                        type="button"
+                        data-close="expenseModal"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <form id="expenseForm">
+
+
+                    <!-- Expense description -->
+
+                    <div class="form-group">
+
+                        <label for="expenseDescription">
+                            Expense Name
+                        </label>
+
+                        <input
+                            id="expenseDescription"
+                            type="text"
+                            placeholder="e.g. Dinner at ABC Restaurant"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- Category -->
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label for="expenseCategory">
+                                Category
+                            </label>
+
+                            <select
+                                id="expenseCategory"
+                                required
+                            >
+
+                                <option value="">
+                                    Select category
+                                </option>
+
+
+                                <optgroup label="Travel">
+
+                                    <option>
+                                        Train
+                                    </option>
+
+                                    <option>
+                                        Flight
+                                    </option>
+
+                                    <option>
+                                        Bus
+                                    </option>
+
+                                    <option>
+                                        Cab / Taxi
+                                    </option>
+
+                                    <option>
+                                        Auto / Rickshaw
+                                    </option>
+
+                                    <option>
+                                        Car Rental
+                                    </option>
+
+                                    <option>
+                                        Fuel / Petrol
+                                    </option>
+
+                                    <option>
+                                        Parking
+                                    </option>
+
+                                    <option>
+                                        Toll
+                                    </option>
+
+                                    <option>
+                                        Local Transport
+                                    </option>
+
+                                </optgroup>
+
+
+                                <optgroup label="Stay">
+
+                                    <option>
+                                        Hotel
+                                    </option>
+
+                                    <option>
+                                        Resort
+                                    </option>
+
+                                    <option>
+                                        Homestay
+                                    </option>
+
+                                    <option>
+                                        Room Charges
+                                    </option>
+
+                                    <option>
+                                        Extra Bed
+                                    </option>
+
+                                    <option>
+                                        Room Service
+                                    </option>
+
+                                </optgroup>
+
+
+                                <optgroup label="Food & Drinks">
+
+                                    <option>
+                                        Breakfast
+                                    </option>
+
+                                    <option>
+                                        Lunch
+                                    </option>
+
+                                    <option>
+                                        Dinner
+                                    </option>
+
+                                    <option>
+                                        Snacks
+                                    </option>
+
+                                    <option>
+                                        Tea / Coffee
+                                    </option>
+
+                                    <option>
+                                        Water
+                                    </option>
+
+                                    <option>
+                                        Restaurant
+                                    </option>
+
+                                    <option>
+                                        Food Delivery
+                                    </option>
+
+                                </optgroup>
+
+
+                                <optgroup label="Activities">
+
+                                    <option>
+                                        Entry Ticket
+                                    </option>
+
+                                    <option>
+                                        Sightseeing
+                                    </option>
+
+                                    <option>
+                                        Adventure
+                                    </option>
+
+                                    <option>
+                                        Boating
+                                    </option>
+
+                                    <option>
+                                        Amusement Park
+                                    </option>
+
+                                    <option>
+                                        Movie
+                                    </option>
+
+                                    <option>
+                                        Event
+                                    </option>
+
+                                    <option>
+                                        Guide
+                                    </option>
+
+                                </optgroup>
+
+
+                                <optgroup label="Other">
+
+                                    <option>
+                                        Shopping
+                                    </option>
+
+                                    <option>
+                                        Souvenir
+                                    </option>
+
+                                    <option>
+                                        Gift
+                                    </option>
+
+                                    <option>
+                                        Personal
+                                    </option>
+
+                                    <option>
+                                        Medicine
+                                    </option>
+
+                                    <option>
+                                        First Aid
+                                    </option>
+
+                                    <option>
+                                        Emergency
+                                    </option>
+
+                                    <option>
+                                        Repair
+                                    </option>
+
+                                    <option>
+                                        Miscellaneous
+                                    </option>
+
+                                    <option>
+                                        Booking Fee
+                                    </option>
+
+                                    <option>
+                                        Service Charge
+                                    </option>
+
+                                    <option>
+                                        Convenience Fee
+                                    </option>
+
+                                    <option>
+                                        Tour / Guide Fee
+                                    </option>
+
+                                    <option>
+                                        Group Fund
+                                    </option>
+
+                                    <option>
+                                        Advance Payment
+                                    </option>
+
+                                </optgroup>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- Amount -->
+
+                        <div class="form-group">
+
+                            <label for="expenseAmount">
+                                Amount
+                            </label>
+
+                            <div class="amount-input">
+
+                                <span>
+                                    ₹
+                                </span>
+
+                                <input
+                                    id="expenseAmount"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Paid by -->
+
+                    <div class="form-group">
+
+                        <label for="expensePaidBy">
+                            Paid By
+                        </label>
+
+                        <select
+                            id="expensePaidBy"
+                            required
+                        >
+
+                            <option value="">
+                                Select who paid
+                            </option>
+
+                        </select>
+
+                        <small class="helper-text">
+                            Who actually paid the money?
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Split method -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Split Method
+                        </label>
+
+
+                        <div class="split-options">
+
+
+                            <label class="split-option">
+
+                                <input
+                                    type="radio"
+                                    name="splitMethod"
+                                    value="equal"
+                                    checked
+                                >
+
+                                <span>
+
+                                    <strong>
+                                        Equal Split
+                                    </strong>
+
+                                    <small>
+                                        Divide equally among
+                                        selected participants
+                                    </small>
+
+                                </span>
+
+                            </label>
+
+
+                            <label class="split-option">
+
+                                <input
+                                    type="radio"
+                                    name="splitMethod"
+                                    value="custom"
+                                >
+
+                                <span>
+
+                                    <strong>
+                                        Custom Split
+                                    </strong>
+
+                                    <small>
+                                        Set each person's
+                                        exact share
+                                    </small>
+
+                                </span>
+
+                            </label>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Participants -->
+
+                    <div class="form-group">
+
+                        <div class="label-with-action">
+
+                            <label>
+                                Participants
+                            </label>
+
+                            <button
+                                id="selectAllParticipants"
+                                class="text-btn"
+                                type="button"
+                            >
+                                Select / Deselect All
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="participantList"
+                            class="participant-list"
+                        >
+
+                        </div>
+
+                        <small class="helper-text">
+                            Select everyone who should
+                            share this expense.
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Custom split -->
+
+                    <div
+                        id="customSplitContainer"
+                        class="form-group hidden"
+                    >
+
+                        <div class="label-with-action">
+
+                            <label>
+                                Custom Shares
+                            </label>
+
+                            <strong
+                                id="customSplitTotal"
+                                class="custom-total"
+                            >
+                                ₹0.00
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            id="customSplitList"
+                            class="custom-split-list"
+                        >
+
+                        </div>
+
+
+                        <small class="helper-text">
+                            The total custom share must
+                            exactly match the expense amount.
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Notes -->
+
+                    <div class="form-group">
+
+                        <label for="expenseNotes">
+                            Notes
+                            <span class="optional">
+                                Optional
+                            </span>
+                        </label>
+
+                        <textarea
+                            id="expenseNotes"
+                            rows="3"
+                            placeholder="Any additional details..."
+                        ></textarea>
+
+                    </div>
+
+
+
+                    <!-- Actions -->
+
+                    <div class="modal-actions">
+
+                        <button
+                            class="secondary-btn"
+                            type="button"
+                            data-close="expenseModal"
+                        >
+                            Cancel
+                        </button>
+
+
+                        <button
+                            class="primary-btn"
+                            type="submit"
+                        >
+                            Save Expense
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             GROUP MODAL
+             ================================================= -->
+
+        <div
+            id="groupModal"
+            class="modal hidden"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box">
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            SETTINGS
+                        </p>
+
+                        <h3>
+                            Group Details
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        class="modal-close"
+                        type="button"
+                        data-close="groupModal"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <form id="groupForm">
+
+
+                    <div class="form-group">
+
+                        <label for="groupName">
+                            Group Name
+                        </label>
+
+                        <input
+                            id="groupName"
+                            type="text"
+                            placeholder="e.g. Goa Trip 2026"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="groupDate">
+                            Date
+                        </label>
+
+                        <input
+                            id="groupDate"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="groupDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="groupDescription"
+                            rows="3"
+                            placeholder="e.g. Weekend trip with friends"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="modal-actions">
+
+                        <button
+                            class="secondary-btn"
+                            type="button"
+                            data-close="groupModal"
+                        >
+                            Cancel
+                        </button>
+
+
+                        <button
+                            class="primary-btn"
+                            type="submit"
+                        >
+                            Save Changes
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CONFIRM MODAL
+             ================================================= -->
+
+        <div
+            id="confirmModal"
+            class="modal hidden"
+            aria-hidden="true"
+        >
+
+            <div class="modal-overlay"></div>
+
+
+            <div class="modal-box small-modal">
+
+                <div class="confirm-icon">
+                    ⚠️
+                </div>
+
+
+                <h3 id="confirmTitle">
+                    Are you sure?
+                </h3>
+
+
+                <p id="confirmMessage">
+                    This action cannot be undone.
+                </p>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        class="secondary-btn"
+                        type="button"
+                        data-close="confirmModal"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        id="confirmActionBtn"
+                        class="danger-btn"
+                        type="button"
+                    >
+                        Confirm
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             TOAST
+             ================================================= -->
+
+        <div
+            id="toast"
+            class="toast"
+            role="status"
+            aria-live="polite"
+        >
+
+            <span id="toastIcon">
+                ✓
+            </span>
+
+            <span id="toastMessage">
+                Done
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
